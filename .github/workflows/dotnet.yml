@@ -36,7 +36,7 @@ jobs:
     - name: Setup_Sonar
       container:
         image: 
-          node:18 hub.codefirst.iut.uca.fr/marc.chevaldonne/codefirst-dronesonarplugin-dotnet7
+          hub.codefirst.iut.uca.fr/marc.chevaldonne/codefirst-dronesonarplugin-dotnet7
 
     - name: Code_Inspection
       run: |
