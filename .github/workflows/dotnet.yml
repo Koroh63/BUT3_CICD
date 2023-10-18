@@ -34,7 +34,9 @@ jobs:
         dotnet test --no-build --verbosity normal
 
     - name: Setup_Sonar
-      uses: hub.codefirst.iut.uca.fr/marc.chevaldonne/codefirst-dronesonarplugin-dotnet7
+      container:
+        image: 
+          node:18 hub.codefirst.iut.uca.fr/marc.chevaldonne/codefirst-dronesonarplugin-dotnet7
 
     - name: Code_Inspection
       run: |
