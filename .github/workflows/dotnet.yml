@@ -21,25 +21,25 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
+
+    - name: Install Sonar
+      run: dotnet tool install --global dotnet-sonarscanner
+
+    - name: Begin Sonar
+      run: dotnet sonarscanner begin /k:CICD_3A_CorentinRICHARD_dotnet /d:sonar.host.url="https://codefirst.iut.uca.fr/sonar/" /d:sonar.coverageReportPaths="coveragereport/SonarQube.xml" /d:sonar.coverage.exclusions="Tests/**" /d:sonar.login=${{ secrets.SECRET_SONAR_LOGIN }}
     
     - name: Build
       run: |
         cd Sources/
         dotnet restore
         dotnet build --no-restore
+        dotnet tool install 
 
     - name: Test
       run: |
         cd Sources/
         dotnet test --no-build --verbosity normal
 
-    - name: Code_Inspection
-      run: |
-        cd Sources/
-        dotnet restore OpenLibraryWS_Wrapper.sln
-        dotnet sonarscanner begin /k:CICD_3A_CorentinRICHARD_dotnet /d:sonar.host.url="https://codefirst.iut.uca.fr/sonar/" /d:sonar.coverageReportPaths="coveragereport/SonarQube.xml" /d:sonar.coverage.exclusions="Tests/**" /d:sonar.login=${{ secrets.SECRET_SONAR_LOGIN }}
-        dotnet build OpenLibraryWS_Wrapper.sln -c Release --no-restore
-        dotnet test OpenLibraryWS_Wrapper.sln --logger trx --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --collect "XPlat Code Coverage"
-        reportgenerator -reports:"**/coverage.cobertura.xml" -reporttypes:SonarQube -targetdir:"coveragereport"
-        dotnet publish OpenLibraryWS_Wrapper.sln -c Release --no-restore -o CI_PROJECT_DIR/build/release
-        dotnet sonarscanner end /d:sonar.login=${{ secrets.SECRET_SONAR_LOGIN }}
+    - name : End Sonar
+      run: dotnet sonarscanner end /d:sonar.login=${{ secrets.SECRET_SONAR_LOGIN }}
+
