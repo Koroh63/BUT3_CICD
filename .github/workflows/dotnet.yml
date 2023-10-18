@@ -23,7 +23,7 @@ jobs:
         dotnet-version: 7.0.x
 
     - name: Install Sonar
-      run: dotnet tool install --global dotnet-sonarscanner
+      run: dotnet tool install dotnet-sonarscanner --global
 
     - name: Begin Sonar
       run: dotnet sonarscanner begin /k:CICD_3A_CorentinRICHARD_dotnet /d:sonar.host.url="https://codefirst.iut.uca.fr/sonar/" /d:sonar.coverageReportPaths="coveragereport/SonarQube.xml" /d:sonar.coverage.exclusions="Tests/**" /d:sonar.login=${{ secrets.SECRET_SONAR_LOGIN }}
