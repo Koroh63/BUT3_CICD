@@ -33,8 +33,8 @@ jobs:
         cd Sources/
         dotnet test --no-build --verbosity normal
 
+    - uses: hub.codefirst.iut.uca.fr/marc.chevaldonne/codefirst-dronesonarplugin-dotnet7
     - name: Code_Inspection
-      uses: hub.codefirst.iut.uca.fr/marc.chevaldonne/codefirst-dronesonarplugin-dotnet7
       secrets: 
         sonar_token: ${{ secrets.SECRET_SONAR_LOGIN }}
       with:
