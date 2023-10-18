@@ -16,6 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
@@ -26,7 +27,24 @@ jobs:
         cd Sources/
         dotnet restore
         dotnet build --no-restore
+
     - name: Test
       run: |
         cd Sources/
         dotnet test --no-build --verbosity normal
+
+    - name: Code_Inspection
+      uses: hub.codefirst.iut.uca.fr/marc.chevaldonne/codefirst-dronesonarplugin-dotnet7
+      secrets: 
+        sonar_token: ${{ secrets.SECRET_SONAR_LOGIN }}
+      with:
+        sonar_host : https://codefirst.iut.uca.fr/sonar/
+      run: |
+        cd Sources/
+        dotnet restore OpenLibraryWS_Wrapper.sln
+        dotnet sonarscanner begin /k:CICD_3A_CorentinRICHARD_dotnet /d:sonar.host.url=$SONAR_HOST /d:sonar.coverageReportPaths="coveragereport/SonarQube.xml" /d:sonar.coverage.exclusions="Tests/**" /d:sonar.login=$SONAR_TOKEN
+        dotnet build OpenLibraryWS_Wrapper.sln -c Release --no-restore
+        dotnet test OpenLibraryWS_Wrapper.sln --logger trx --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --collect "XPlat Code Coverage"
+        reportgenerator -reports:"**/coverage.cobertura.xml" -reporttypes:SonarQube -targetdir:"coveragereport"
+        dotnet publish OpenLibraryWS_Wrapper.sln -c Release --no-restore -o ${{ github.workspace }}/build/release
+        dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN
