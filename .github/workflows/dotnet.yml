@@ -33,7 +33,6 @@ jobs:
         cd Sources/
         dotnet restore
         dotnet build --no-restore
-        dotnet tool install 
 
     - name: Test
       run: |
